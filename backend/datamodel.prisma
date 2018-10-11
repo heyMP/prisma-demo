@@ -11,3 +11,10 @@ type Post {
   published: Boolean! @default(value: "false")
   author: User
 }
+
+type Position {
+  x: String!
+  y: String!
+  z: String!
+  user: String!
+}

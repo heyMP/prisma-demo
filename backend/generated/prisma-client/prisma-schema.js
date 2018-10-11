@@ -1,5 +1,9 @@
 module.exports = {
-        typeDefs: /* GraphQL */ `type AggregatePost {
+        typeDefs: /* GraphQL */ `type AggregatePosition {
+  count: Int!
+}
+
+type AggregatePost {
   count: Int!
 }
 
@@ -14,6 +18,9 @@ type BatchPayload {
 scalar Long
 
 type Mutation {
+  createPosition(data: PositionCreateInput!): Position!
+  updateManyPositions(data: PositionUpdateInput!, where: PositionWhereInput): BatchPayload!
+  deleteManyPositions(where: PositionWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateInput!, where: PostWhereInput): BatchPayload!
@@ -43,6 +50,142 @@ type PageInfo {
   hasPreviousPage: Boolean!
   startCursor: String
   endCursor: String
+}
+
+type Position {
+  x: String!
+  y: String!
+  z: String!
+  user: String!
+}
+
+type PositionConnection {
+  pageInfo: PageInfo!
+  edges: [PositionEdge]!
+  aggregate: AggregatePosition!
+}
+
+input PositionCreateInput {
+  x: String!
+  y: String!
+  z: String!
+  user: String!
+}
+
+type PositionEdge {
+  node: Position!
+  cursor: String!
+}
+
+enum PositionOrderByInput {
+  x_ASC
+  x_DESC
+  y_ASC
+  y_DESC
+  z_ASC
+  z_DESC
+  user_ASC
+  user_DESC
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PositionPreviousValues {
+  x: String!
+  y: String!
+  z: String!
+  user: String!
+}
+
+type PositionSubscriptionPayload {
+  mutation: MutationType!
+  node: Position
+  updatedFields: [String!]
+  previousValues: PositionPreviousValues
+}
+
+input PositionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PositionWhereInput
+  AND: [PositionSubscriptionWhereInput!]
+  OR: [PositionSubscriptionWhereInput!]
+  NOT: [PositionSubscriptionWhereInput!]
+}
+
+input PositionUpdateInput {
+  x: String
+  y: String
+  z: String
+  user: String
+}
+
+input PositionWhereInput {
+  x: String
+  x_not: String
+  x_in: [String!]
+  x_not_in: [String!]
+  x_lt: String
+  x_lte: String
+  x_gt: String
+  x_gte: String
+  x_contains: String
+  x_not_contains: String
+  x_starts_with: String
+  x_not_starts_with: String
+  x_ends_with: String
+  x_not_ends_with: String
+  y: String
+  y_not: String
+  y_in: [String!]
+  y_not_in: [String!]
+  y_lt: String
+  y_lte: String
+  y_gt: String
+  y_gte: String
+  y_contains: String
+  y_not_contains: String
+  y_starts_with: String
+  y_not_starts_with: String
+  y_ends_with: String
+  y_not_ends_with: String
+  z: String
+  z_not: String
+  z_in: [String!]
+  z_not_in: [String!]
+  z_lt: String
+  z_lte: String
+  z_gt: String
+  z_gte: String
+  z_contains: String
+  z_not_contains: String
+  z_starts_with: String
+  z_not_starts_with: String
+  z_ends_with: String
+  z_not_ends_with: String
+  user: String
+  user_not: String
+  user_in: [String!]
+  user_not_in: [String!]
+  user_lt: String
+  user_lte: String
+  user_gt: String
+  user_gte: String
+  user_contains: String
+  user_not_contains: String
+  user_starts_with: String
+  user_not_starts_with: String
+  user_ends_with: String
+  user_not_ends_with: String
+  AND: [PositionWhereInput!]
+  OR: [PositionWhereInput!]
+  NOT: [PositionWhereInput!]
 }
 
 type Post {
@@ -189,6 +332,8 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  positions(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Position]!
+  positionsConnection(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PositionConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
@@ -199,6 +344,7 @@ type Query {
 }
 
 type Subscription {
+  position(where: PositionSubscriptionWhereInput): PositionSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
