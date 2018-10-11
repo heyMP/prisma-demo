@@ -19,12 +19,14 @@ const ADD_POSITION = gql`
 
 const renderPosition = () => {
   client.query({ query: GET_POSITION, fetchPolicy: 'no-cache' }).then(res => {
-    console.log(`The Current Position is`, res.data.positions)
+    const el = document.querySelector('track-position')
+    const p = res.data.positions[0]
+    el.innerHTML = `x: ${p.x}, y: ${p.y}`
   })
 }
 
-export default (() => {
-  document.body.addEventListener('click', e => {
+export default () => {
+  document.addEventListener('mousemove', e => {
     const position = Object.assign({}, {
       x: String(e.screenX),
       y: String(e.screenY),
@@ -36,4 +38,4 @@ export default (() => {
       renderPosition()
     })
   })
-})()
+}

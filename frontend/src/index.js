@@ -1,2 +1,4 @@
-import './user-list'
-import './track-position'
+import trackPosition from './track-position'
+
+// enable
+trackPosition()
