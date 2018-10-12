@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "parcel": "parcel -d -h 38907 frontend/dist frontend/src/index.html",
-    "parcel:build": "parcel build frontend/dist frontend/src/index.html",
+    "parcel": "parcel -d frontend/dist --hmr-port 37195 frontend/src/index.html",
+    "parcel:build": "parcel build -d frontend/dist frontend/src/index.html",
     "prisma:update": "cd backend && prisma deploy && prisma generate"
   },
   "keywords": [],
