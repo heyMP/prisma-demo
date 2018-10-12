@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:frontend": "parcel -d frontend/dist frontend/src/index.html",
-    "start:backend": "docker-compose up -d && npm run prisma:update",
-    "stop:backend": "docker-compose down",
+    "parcel": "parcel -d -h 38907 frontend/dist frontend/src/index.html",
     "prisma:update": "cd backend && prisma deploy && prisma generate"
   },
   "keywords": [],

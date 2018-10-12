@@ -21,7 +21,7 @@ const renderPosition = () => {
   client.query({ query: GET_POSITION, fetchPolicy: 'no-cache' }).then(res => {
     const el = document.querySelector('track-position')
     const p = res.data.positions[0]
-    el.innerHTML = `x: ${p.x}, y: ${p.y}`
+    el.innerHTML = `x: ${p.x} y: ${p.y}`
   })
 }
 
