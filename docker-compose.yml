@@ -1,23 +1,23 @@
 version: '3'
 services:
-  frontend:
+  nginx:
     build:
       context: .
       dockerfile: Dockerfile-nginx
     ports:
       - "80:80"
-  backend:
+  node:
     build:
       context: .
       dockerfile: Dockerfile-node
     volumes:
-      - ./backend:/home/node/html/backend
+      - .:/home/node/html
       - /home/node/html/node_modules
   prisma:
     image: prismagraphql/prisma:1.17
     restart: always
     ports:
-    - "4466:4466"
+      - "4466:4466"
     environment:
       PRISMA_CONFIG: |
         port: 4466

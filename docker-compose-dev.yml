@@ -1,14 +1,7 @@
 version: '3'
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile-node
+  node:
     ports:
       - "1234:1234"
       - "37195:37195"
-    volumes:
-      - ./frontend:/home/node/html/frontend
-      - /home/node/html/node_modules
-    # command: ["npm", "run", "parcel"]
-    command: ["./node_modules/.bin/parcel", "-d", "--hmr-port", "37195", "frontend/dist", "frontend/src/index.html"]
+    command: ["./node_modules/.bin/parcel", "-d", "frontend/dist", "--hmr-port", "37195", "frontend/src/index.html"]

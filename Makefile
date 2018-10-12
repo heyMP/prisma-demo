@@ -9,5 +9,8 @@ start-prod:
 start-dev:
 	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
 
+build-frontend:
+	docker-compose run node npm run parcel:build
+
 prisma-update:
-	docker-compose run backend npm run prisma:update
+	docker-compose run node npm run prisma:update

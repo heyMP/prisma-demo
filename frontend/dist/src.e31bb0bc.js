@@ -16118,7 +16118,7 @@ var renderPosition = function renderPosition() {
   }).then(function (res) {
     var el = document.querySelector('track-position');
     var p = res.data.positions[0];
-    el.innerHTML = "x: ".concat(p.x, ", y: ").concat(p.y);
+    el.innerHTML = "x: ".concat(p.x, " y: ").concat(p.y);
   });
 };
 
@@ -16179,7 +16179,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "42031" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37195" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
