@@ -13333,11 +13333,11 @@ var _apolloUtilities = require("apollo-utilities");
 
 // Create an http link:
 var httpLink = new _apolloLinkHttp.HttpLink({
-  uri: "http://localhost:4466/"
+  uri: "http://".concat("localhost", ":4466/")
 }); // Create a Websocket link;
 
 var wsLink = new _apolloLinkWs.WebSocketLink({
-  uri: "ws://localhost:4466/",
+  uri: "ws://".concat("localhost", ":4466/"),
   options: {
     reconnect: true
   }

@@ -8,12 +8,12 @@ import { getMainDefinition } from 'apollo-utilities';
 
 // Create an http link:
 const httpLink = new HttpLink({
-  uri: `http://localhost:4466/`,
+  uri: `http://${process.env.HOST_URL}:4466/`,
 })
 
 // Create a Websocket link;
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4466/`,
+  uri: `ws://${process.env.HOST_URL}:4466/`,
   options: {
     reconnect: true
   }
