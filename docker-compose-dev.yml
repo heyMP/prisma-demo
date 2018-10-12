@@ -4,4 +4,4 @@ services:
     ports:
       - "1234:1234"
       - "37195:37195"
-    command: ["./node_modules/.bin/parcel", "-d", "frontend/dist", "--hmr-port", "37195", "frontend/src/index.html"]
+    command: ["npm", "run", "parcel"]
