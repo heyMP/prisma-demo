@@ -1,8 +1,24 @@
 import client from './client'
-import { CREATE_POSITION, GET_LATEST_POSITION } from './queries'
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import gql from 'graphql-tag'
+
+const GET_LATEST_POSITION = gql`
+  query {
+    positions(last:1) {
+      x y z
+    }
+  }
+`
+
+const CREATE_POSITION = gql`
+  mutation ($data: PositionCreateInput!) {
+    createPosition(data: $data) {
+      x y z
+    }
+  }
+`
 
 export default () => {
+  // get the latest mouse position from gql and subscribe to more
   const watchQuery = client.watchQuery({ query: GET_LATEST_POSITION })
     .subscribe(res => {
       const el = document.querySelector('track-position')
@@ -10,13 +26,16 @@ export default () => {
       el.innerHTML = `x: ${p.x} y: ${p.y}`
     })
 
+  // for every mouse movement, save it to the grapql database
   document.addEventListener('mousemove', e => {
+    // get the position
     const position = Object.assign({}, {
       x: String(e.screenX),
       y: String(e.screenY),
       z: String(0),
     })
 
+    // save the position
     client.mutate({
       mutation: CREATE_POSITION,
       variables: { data: position },
