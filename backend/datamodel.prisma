@@ -13,8 +13,8 @@ type Post {
 }
 
 type Position {
+  id: ID! @unique
   x: String!
   y: String!
   z: String!
-  user: String!
 }

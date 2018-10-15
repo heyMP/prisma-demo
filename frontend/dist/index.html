@@ -1,1 +1,26 @@
-<!DOCTYPE html><html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <title>Document</title> <link rel="stylesheet" href="/styles.e384b54e.css"> </head> <body> <h1>GraphQL Mouse Tracker</h1> <p> This relecting the current state of the graphql database. Each mouse movement will trigger a mutation or "save" to the Prisma GraphQL database. We then subscribe to any CRUD operations to the "position" type. The subscriptions run over a web socket connection. When we get notified of a change, we can re-run the original query which gets the latest "position" in the GraphQL database. We then re-render the output on the screen. This demonstrates unidirectional dataflow without needing a middleman like Redux. And it happens really fast. </p> <track-position> [Move your mouse around] </track-position> <script src="/src.d7742bf0.js" defer></script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="/styles.164d45a1.css">
+<script src="/styles.164d45a1.js"></script></head>
+
+<body>
+  <h1>GraphQL Mouse Tracker</h1>
+  <p>
+    This relecting the current state of the graphql database. Each mouse movement will trigger a mutation or "save" to the Prisma GraphQL database. We then subscribe to any CRUD operations to the "position" type.  The subscriptions run over a web socket connection.  When we get notified of a change, we can re-run the original query which gets the latest "position" in the GraphQL database. We then re-render the output on the screen. This demonstrates unidirectional dataflow without needing a middleman like Redux. And it happens really fast.
+  </p>
+
+  <track-position>
+    [Move your mouse around]
+  </track-position>
+
+  <button id="get-latest-position">Get Latest Position</button>
+
+  <script src="/src.e31bb0bc.js" defer=""></script>
+</body>
+</html>

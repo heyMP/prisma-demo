@@ -19,7 +19,10 @@ scalar Long
 
 type Mutation {
   createPosition(data: PositionCreateInput!): Position!
+  updatePosition(data: PositionUpdateInput!, where: PositionWhereUniqueInput!): Position
   updateManyPositions(data: PositionUpdateInput!, where: PositionWhereInput): BatchPayload!
+  upsertPosition(where: PositionWhereUniqueInput!, create: PositionCreateInput!, update: PositionUpdateInput!): Position!
+  deletePosition(where: PositionWhereUniqueInput!): Position
   deleteManyPositions(where: PositionWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
@@ -53,10 +56,10 @@ type PageInfo {
 }
 
 type Position {
+  id: ID!
   x: String!
   y: String!
   z: String!
-  user: String!
 }
 
 type PositionConnection {
@@ -69,7 +72,6 @@ input PositionCreateInput {
   x: String!
   y: String!
   z: String!
-  user: String!
 }
 
 type PositionEdge {
@@ -78,16 +80,14 @@ type PositionEdge {
 }
 
 enum PositionOrderByInput {
+  id_ASC
+  id_DESC
   x_ASC
   x_DESC
   y_ASC
   y_DESC
   z_ASC
   z_DESC
-  user_ASC
-  user_DESC
-  id_ASC
-  id_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -95,10 +95,10 @@ enum PositionOrderByInput {
 }
 
 type PositionPreviousValues {
+  id: ID!
   x: String!
   y: String!
   z: String!
-  user: String!
 }
 
 type PositionSubscriptionPayload {
@@ -123,10 +123,23 @@ input PositionUpdateInput {
   x: String
   y: String
   z: String
-  user: String
 }
 
 input PositionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
   x: String
   x_not: String
   x_in: [String!]
@@ -169,23 +182,13 @@ input PositionWhereInput {
   z_not_starts_with: String
   z_ends_with: String
   z_not_ends_with: String
-  user: String
-  user_not: String
-  user_in: [String!]
-  user_not_in: [String!]
-  user_lt: String
-  user_lte: String
-  user_gt: String
-  user_gte: String
-  user_contains: String
-  user_not_contains: String
-  user_starts_with: String
-  user_not_starts_with: String
-  user_ends_with: String
-  user_not_ends_with: String
   AND: [PositionWhereInput!]
   OR: [PositionWhereInput!]
   NOT: [PositionWhereInput!]
+}
+
+input PositionWhereUniqueInput {
+  id: ID
 }
 
 type Post {
@@ -332,6 +335,7 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  position(where: PositionWhereUniqueInput!): Position
   positions(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Position]!
   positionsConnection(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PositionConnection!
   post(where: PostWhereUniqueInput!): Post

@@ -5,6 +5,7 @@ import { onError } from 'apollo-link-error';
 import { ApolloLink, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
+import { withClientState } from 'apollo-link-state';
 
 // Create an http link:
 const httpLink = new HttpLink({
@@ -21,7 +22,7 @@ const wsLink = new WebSocketLink({
 
 // using the ability to split links, you can send data to each link
 // depending on what kind of operation is being sent
-const magicLink = split(
+const httpWsLink = split(
   // split based on operation type
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query);
@@ -30,6 +31,28 @@ const magicLink = split(
   wsLink,
   httpLink,
 );
+
+// This is the same cache you pass into new ApolloClient
+const cache = new InMemoryCache();
+
+// set up link state for local
+const stateLink = withClientState({
+  cache,
+  resolvers: {
+    Mutation: {
+      updateNetworkStatus: (_, { isConnected }, { cache }) => {
+        const data = {
+          networkStatus: {
+            __typename: 'NetworkStatus',
+            isConnected
+          },
+        };
+        cache.writeData({ data });
+        return null;
+      },
+    },
+  }
+});
 
 export default new ApolloClient({
   link: ApolloLink.from([
@@ -42,7 +65,8 @@ export default new ApolloClient({
         );
       if (networkError) console.log(`[Network error]: ${networkError}`);
     }),
-    magicLink
+    stateLink,
+    httpWsLink
   ]),
-  cache: new InMemoryCache()
+  cache: cache
 });

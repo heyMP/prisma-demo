@@ -4,10 +4,13 @@ export $(shell sed 's/=.*//' .env)
 USER=$(shell whoami)
 
 start-prod:
-	docker-compose up -d
+	make build-frontend
+	docker-compose up -d --build
+	make prisma-update
 
 start-dev:
 	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d
+	make prisma-update
 
 build-frontend:
 	docker-compose run node npm run parcel:build
