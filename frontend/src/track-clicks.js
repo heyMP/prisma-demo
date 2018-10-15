@@ -25,7 +25,7 @@ export default () => {
     .subscribe((res) => {
       const el = document.querySelector('track-clicks')
       const c = res.data.clicks[0]
-      el.innerHTML = `You clicked on ${c.target} last with and id of ${c.id}`
+      el.innerHTML = `You clicked on ${c.target} last`
     })
 
   document.addEventListener('click', e => {
