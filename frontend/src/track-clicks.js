@@ -5,7 +5,7 @@ import { create } from 'domain';
 const GET_LATEST_CLICK = gql`
   query {
     clicks(last: 1) {
-      id target
+      target
     }
   }
 `
@@ -35,12 +35,7 @@ export default () => {
     client.mutate({
       mutation: CREATE_CLICK,
       variables: { data: click },
-      optimisticResponse: {
-        __typename: "Mutation",
-        createClick: Object.assign({}, click, { __typename: "Click", id: "optomistic_ui_id" } )
-      },
       update: (store, { data: { createClick }}) => {
-        console.log(createClick)
         const data = store.readQuery({ query: GET_LATEST_CLICK })
         data.clicks[0] = createClick
         store.writeQuery({ query: GET_LATEST_CLICK, data })

@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const GET_LATEST_POSITION = gql`
   query {
     positions(last: 1) {
-      x y z id
+      id x y
     }
   }
 `
@@ -12,7 +12,7 @@ const GET_LATEST_POSITION = gql`
 const CREATE_POSITION = gql`
   mutation ($data: PositionCreateInput!) {
     createPosition(data: $data) {
-      x y z id
+      id x y z
     }
   }
 `
