@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const GET_LATEST_POSITION = gql`
   query {
     positions(last: 1) {
-      x y z
+      x y z id
     }
   }
 `
@@ -23,7 +23,7 @@ export default () => {
     .subscribe(res => {
       const el = document.querySelector('track-position')
       const p = res.data.positions[0]
-      el.innerHTML = `x: ${p.x} y: ${p.y}`
+      el.innerHTML = `x: ${p.x} y: ${p.y} id: ${p.id}`
     })
   
   // for every mouse movement, save it to the grapql database
@@ -39,6 +39,10 @@ export default () => {
     client.mutate({
       mutation: CREATE_POSITION,
       variables: { data: position },
+      optimisticResponse: {
+        __typename: "Mutation",
+        createPosition: Object.assign({}, position, { __typename: "Position", id: "optomistic_ui_id" } )
+      },
       update: (store, { data: { createPosition } }) => {
         const data = store.readQuery({ query: GET_LATEST_POSITION })
         data.positions[0] = createPosition
