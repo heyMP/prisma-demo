@@ -13,7 +13,7 @@ start-dev:
 	make prisma-update
 
 build-frontend:
-	docker-compose run node npm run parcel:build
+	docker-compose run --rm node npm run parcel:build
 
 prisma-update:
-	docker-compose run node npm run prisma:update
+	docker-compose run --rm node npm run prisma:update
