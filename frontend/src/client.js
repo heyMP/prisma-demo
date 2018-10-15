@@ -68,5 +68,6 @@ export default new ApolloClient({
     stateLink,
     httpWsLink
   ]),
-  cache: cache
+  cache: cache,
+  connectToDevTools: (process.env.DEVELOPMENT)
 });
