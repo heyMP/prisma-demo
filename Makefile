@@ -13,11 +13,11 @@ start-dev:
 	make prisma-update-force
 
 build-frontend:
-	docker-compose run --rm node npm run parcel:build
+	docker-compose run --rm node npm run parcel:build --build
 
 prisma-update:
-	docker-compose run --rm node npm run prisma:update
+	docker-compose run --rm node npm run prisma:update --build
 
 # Forces an update
 prisma-update-force:
-	docker-compose run --rm node npm run prisma:update:force
+	docker-compose run --rm node npm run prisma:update:force --build
