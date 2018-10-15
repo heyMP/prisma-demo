@@ -18,3 +18,8 @@ type Position {
   y: String!
   z: String!
 }
+
+type Click {
+  id: ID! @unique
+  target: String!
+}

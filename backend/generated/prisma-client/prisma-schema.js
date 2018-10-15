@@ -1,5 +1,9 @@
 module.exports = {
-        typeDefs: /* GraphQL */ `type AggregatePosition {
+        typeDefs: /* GraphQL */ `type AggregateClick {
+  count: Int!
+}
+
+type AggregatePosition {
   count: Int!
 }
 
@@ -15,9 +19,111 @@ type BatchPayload {
   count: Long!
 }
 
+type Click {
+  id: ID!
+  target: String!
+}
+
+type ClickConnection {
+  pageInfo: PageInfo!
+  edges: [ClickEdge]!
+  aggregate: AggregateClick!
+}
+
+input ClickCreateInput {
+  target: String!
+}
+
+type ClickEdge {
+  node: Click!
+  cursor: String!
+}
+
+enum ClickOrderByInput {
+  id_ASC
+  id_DESC
+  target_ASC
+  target_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ClickPreviousValues {
+  id: ID!
+  target: String!
+}
+
+type ClickSubscriptionPayload {
+  mutation: MutationType!
+  node: Click
+  updatedFields: [String!]
+  previousValues: ClickPreviousValues
+}
+
+input ClickSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ClickWhereInput
+  AND: [ClickSubscriptionWhereInput!]
+  OR: [ClickSubscriptionWhereInput!]
+  NOT: [ClickSubscriptionWhereInput!]
+}
+
+input ClickUpdateInput {
+  target: String
+}
+
+input ClickWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  target: String
+  target_not: String
+  target_in: [String!]
+  target_not_in: [String!]
+  target_lt: String
+  target_lte: String
+  target_gt: String
+  target_gte: String
+  target_contains: String
+  target_not_contains: String
+  target_starts_with: String
+  target_not_starts_with: String
+  target_ends_with: String
+  target_not_ends_with: String
+  AND: [ClickWhereInput!]
+  OR: [ClickWhereInput!]
+  NOT: [ClickWhereInput!]
+}
+
+input ClickWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
+  createClick(data: ClickCreateInput!): Click!
+  updateClick(data: ClickUpdateInput!, where: ClickWhereUniqueInput!): Click
+  updateManyClicks(data: ClickUpdateInput!, where: ClickWhereInput): BatchPayload!
+  upsertClick(where: ClickWhereUniqueInput!, create: ClickCreateInput!, update: ClickUpdateInput!): Click!
+  deleteClick(where: ClickWhereUniqueInput!): Click
+  deleteManyClicks(where: ClickWhereInput): BatchPayload!
   createPosition(data: PositionCreateInput!): Position!
   updatePosition(data: PositionUpdateInput!, where: PositionWhereUniqueInput!): Position
   updateManyPositions(data: PositionUpdateInput!, where: PositionWhereInput): BatchPayload!
@@ -335,6 +441,9 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  click(where: ClickWhereUniqueInput!): Click
+  clicks(where: ClickWhereInput, orderBy: ClickOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Click]!
+  clicksConnection(where: ClickWhereInput, orderBy: ClickOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ClickConnection!
   position(where: PositionWhereUniqueInput!): Position
   positions(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Position]!
   positionsConnection(where: PositionWhereInput, orderBy: PositionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PositionConnection!
@@ -348,6 +457,7 @@ type Query {
 }
 
 type Subscription {
+  click(where: ClickSubscriptionWhereInput): ClickSubscriptionPayload
   position(where: PositionSubscriptionWhereInput): PositionSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload

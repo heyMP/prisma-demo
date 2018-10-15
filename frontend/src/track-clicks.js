@@ -1,0 +1,50 @@
+import client from './client'
+import gql from 'graphql-tag'
+import { create } from 'domain';
+
+const GET_LATEST_CLICK = gql`
+  query {
+    clicks(last: 1) {
+      id target
+    }
+  }
+`
+
+const CREATE_CLICK = gql`
+  mutation ($data: ClickCreateInput!) {
+    createClick(data: $data) {
+      id target
+    }
+  }
+`
+
+export default () => {
+
+  // get the latest click
+  client.watchQuery({ query: GET_LATEST_CLICK })
+    .subscribe((res) => {
+      const el = document.querySelector('track-clicks')
+      const c = res.data.clicks[0]
+      el.innerHTML = `You clicked on ${c.target} last with and id of ${c.id}`
+    })
+
+  document.addEventListener('click', e => {
+    const click = Object.assign({}, { target: e.target.nodeName })
+
+    // save the click
+    client.mutate({
+      mutation: CREATE_CLICK,
+      variables: { data: click },
+      optimisticResponse: {
+        __typename: "Mutation",
+        createClick: Object.assign({}, click, { __typename: "Click", id: "optomistic_ui_id" } )
+      },
+      update: (store, { data: { createClick }}) => {
+        console.log(createClick)
+        const data = store.readQuery({ query: GET_LATEST_CLICK })
+        data.clicks[0] = createClick
+        store.writeQuery({ query: GET_LATEST_CLICK, data })
+      }
+    })
+  })
+}
