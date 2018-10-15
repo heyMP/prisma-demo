@@ -9,11 +9,15 @@ start-prod:
 	make prisma-update
 
 start-dev:
-	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d
-	make prisma-update
+	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
+	make prisma-update-force
 
 build-frontend:
 	docker-compose run --rm node npm run parcel:build
 
 prisma-update:
 	docker-compose run --rm node npm run prisma:update
+
+# Forces an update
+prisma-update-force:
+	docker-compose run --rm node npm run prisma:update:force
