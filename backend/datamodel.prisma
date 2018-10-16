@@ -23,3 +23,9 @@ type Click {
   id: ID! @unique
   target: String!
 }
+
+type Message {
+  id: ID! @unique
+  text: String!
+  sentBy: User!
+}

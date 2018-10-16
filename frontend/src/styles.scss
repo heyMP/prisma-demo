@@ -1,5 +1,5 @@
 body {
-  background: pink;
+  background: cornsilk;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -20,6 +20,10 @@ track-position {
 track-clicks {
   margin-top: 1em;
   font-size: 2em;
+}
+
+chat-messages {
+  padding-top: 5em;
 }
 
 p {

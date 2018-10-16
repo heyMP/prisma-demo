@@ -12,6 +12,8 @@ type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   click: (where?: ClickWhereInput) => Promise<boolean>;
+  message: (where?: MessageWhereInput) => Promise<boolean>;
+  person: (where?: PersonWhereInput) => Promise<boolean>;
   position: (where?: PositionWhereInput) => Promise<boolean>;
   post: (where?: PostWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
@@ -60,6 +62,52 @@ export interface Prisma {
       last?: Int;
     }
   ) => ClickConnection;
+  message: (where: MessageWhereUniqueInput) => Message;
+  messages: (
+    args?: {
+      where?: MessageWhereInput;
+      orderBy?: MessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<MessageNode>;
+  messagesConnection: (
+    args?: {
+      where?: MessageWhereInput;
+      orderBy?: MessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => MessageConnection;
+  person: (where: PersonWhereUniqueInput) => Person;
+  persons: (
+    args?: {
+      where?: PersonWhereInput;
+      orderBy?: PersonOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<PersonNode>;
+  personsConnection: (
+    args?: {
+      where?: PersonWhereInput;
+      orderBy?: PersonOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => PersonConnection;
   position: (where: PositionWhereUniqueInput) => Position;
   positions: (
     args?: {
@@ -151,6 +199,38 @@ export interface Prisma {
   ) => Click;
   deleteClick: (where: ClickWhereUniqueInput) => Click;
   deleteManyClicks: (where?: ClickWhereInput) => BatchPayload;
+  createMessage: (data: MessageCreateInput) => Message;
+  updateMessage: (
+    args: { data: MessageUpdateInput; where: MessageWhereUniqueInput }
+  ) => Message;
+  updateManyMessages: (
+    args: { data: MessageUpdateInput; where?: MessageWhereInput }
+  ) => BatchPayload;
+  upsertMessage: (
+    args: {
+      where: MessageWhereUniqueInput;
+      create: MessageCreateInput;
+      update: MessageUpdateInput;
+    }
+  ) => Message;
+  deleteMessage: (where: MessageWhereUniqueInput) => Message;
+  deleteManyMessages: (where?: MessageWhereInput) => BatchPayload;
+  createPerson: (data: PersonCreateInput) => Person;
+  updatePerson: (
+    args: { data: PersonUpdateInput; where: PersonWhereUniqueInput }
+  ) => Person;
+  updateManyPersons: (
+    args: { data: PersonUpdateInput; where?: PersonWhereInput }
+  ) => BatchPayload;
+  upsertPerson: (
+    args: {
+      where: PersonWhereUniqueInput;
+      create: PersonCreateInput;
+      update: PersonUpdateInput;
+    }
+  ) => Person;
+  deletePerson: (where: PersonWhereUniqueInput) => Person;
+  deleteManyPersons: (where?: PersonWhereInput) => BatchPayload;
   createPosition: (data: PositionCreateInput) => Position;
   updatePosition: (
     args: { data: PositionUpdateInput; where: PositionWhereUniqueInput }
@@ -211,6 +291,12 @@ export interface Subscription {
   click: (
     where?: ClickSubscriptionWhereInput
   ) => ClickSubscriptionPayloadSubscription;
+  message: (
+    where?: MessageSubscriptionWhereInput
+  ) => MessageSubscriptionPayloadSubscription;
+  person: (
+    where?: PersonSubscriptionWhereInput
+  ) => PersonSubscriptionPayloadSubscription;
   position: (
     where?: PositionSubscriptionWhereInput
   ) => PositionSubscriptionPayloadSubscription;
@@ -230,15 +316,35 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type PositionOrderByInput =
+export type PostOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "x_ASC"
-  | "x_DESC"
-  | "y_ASC"
-  | "y_DESC"
-  | "z_ASC"
-  | "z_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "published_ASC"
+  | "published_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type MessageOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "text_ASC"
+  | "text_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type PersonOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "email_ASC"
+  | "email_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -254,13 +360,15 @@ export type ClickOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type PostOrderByInput =
+export type PositionOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "title_ASC"
-  | "title_DESC"
-  | "published_ASC"
-  | "published_DESC"
+  | "x_ASC"
+  | "x_DESC"
+  | "y_ASC"
+  | "y_DESC"
+  | "z_ASC"
+  | "z_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -288,121 +396,15 @@ export type ClickWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
 
-export interface UserWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  email?: String;
-  email_not?: String;
-  email_in?: String[] | String;
-  email_not_in?: String[] | String;
-  email_lt?: String;
-  email_lte?: String;
-  email_gt?: String;
-  email_gte?: String;
-  email_contains?: String;
-  email_not_contains?: String;
-  email_starts_with?: String;
-  email_not_starts_with?: String;
-  email_ends_with?: String;
-  email_not_ends_with?: String;
-  name?: String;
-  name_not?: String;
-  name_in?: String[] | String;
-  name_not_in?: String[] | String;
-  name_lt?: String;
-  name_lte?: String;
-  name_gt?: String;
-  name_gte?: String;
-  name_contains?: String;
-  name_not_contains?: String;
-  name_starts_with?: String;
-  name_not_starts_with?: String;
-  name_ends_with?: String;
-  name_not_ends_with?: String;
-  posts_every?: PostWhereInput;
-  posts_some?: PostWhereInput;
-  posts_none?: PostWhereInput;
-  AND?: UserWhereInput[] | UserWhereInput;
-  OR?: UserWhereInput[] | UserWhereInput;
-  NOT?: UserWhereInput[] | UserWhereInput;
+export interface PositionUpdateInput {
+  x?: String;
+  y?: String;
+  z?: String;
 }
 
-export interface PositionCreateInput {
-  x: String;
-  y: String;
-  z: String;
-}
-
-export interface ClickWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  target?: String;
-  target_not?: String;
-  target_in?: String[] | String;
-  target_not_in?: String[] | String;
-  target_lt?: String;
-  target_lte?: String;
-  target_gt?: String;
-  target_gte?: String;
-  target_contains?: String;
-  target_not_contains?: String;
-  target_starts_with?: String;
-  target_not_starts_with?: String;
-  target_ends_with?: String;
-  target_not_ends_with?: String;
-  AND?: ClickWhereInput[] | ClickWhereInput;
-  OR?: ClickWhereInput[] | ClickWhereInput;
-  NOT?: ClickWhereInput[] | ClickWhereInput;
-}
-
-export interface PostSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: PostWhereInput;
-  AND?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
-  OR?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
-  NOT?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
-}
-
-export interface PostCreateManyWithoutAuthorInput {
-  create?: PostCreateWithoutAuthorInput[] | PostCreateWithoutAuthorInput;
-  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
-}
-
-export type PositionWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface UserCreateInput {
-  email?: String;
-  name: String;
-  posts?: PostCreateManyWithoutAuthorInput;
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
 }
 
 export interface PositionWhereInput {
@@ -467,20 +469,246 @@ export interface PositionWhereInput {
   NOT?: PositionWhereInput[] | PositionWhereInput;
 }
 
+export interface MessageCreateInput {
+  text: String;
+  sentBy: UserCreateOneInput;
+}
+
+export interface ClickWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  target?: String;
+  target_not?: String;
+  target_in?: String[] | String;
+  target_not_in?: String[] | String;
+  target_lt?: String;
+  target_lte?: String;
+  target_gt?: String;
+  target_gte?: String;
+  target_contains?: String;
+  target_not_contains?: String;
+  target_starts_with?: String;
+  target_not_starts_with?: String;
+  target_ends_with?: String;
+  target_not_ends_with?: String;
+  AND?: ClickWhereInput[] | ClickWhereInput;
+  OR?: ClickWhereInput[] | ClickWhereInput;
+  NOT?: ClickWhereInput[] | ClickWhereInput;
+}
+
+export type MessageWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface PositionCreateInput {
+  x: String;
+  y: String;
+  z: String;
+}
+
+export interface PositionSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: PositionWhereInput;
+  AND?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
+  OR?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
+  NOT?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
+}
+
+export interface PersonUpdateInput {
+  name?: String;
+  email?: String;
+}
+
+export interface UserWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
+  posts_every?: PostWhereInput;
+  posts_some?: PostWhereInput;
+  posts_none?: PostWhereInput;
+  AND?: UserWhereInput[] | UserWhereInput;
+  OR?: UserWhereInput[] | UserWhereInput;
+  NOT?: UserWhereInput[] | UserWhereInput;
+}
+
+export interface PersonCreateInput {
+  name: String;
+  email: String;
+}
+
+export interface MessageSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: MessageWhereInput;
+  AND?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput;
+  OR?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput;
+  NOT?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput;
+}
+
+export type PostWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface ClickSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ClickWhereInput;
+  AND?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
+  OR?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
+  NOT?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
 export interface UserUpsertWithoutPostsInput {
   update: UserUpdateWithoutPostsDataInput;
   create: UserCreateWithoutPostsInput;
 }
+
+export interface PostUpsertWithWhereUniqueWithoutAuthorInput {
+  where: PostWhereUniqueInput;
+  update: PostUpdateWithoutAuthorDataInput;
+  create: PostCreateWithoutAuthorInput;
+}
+
+export type PersonWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
 
 export interface PostUpdateWithoutAuthorDataInput {
   title?: String;
   published?: Boolean;
 }
 
+export interface PersonWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  AND?: PersonWhereInput[] | PersonWhereInput;
+  OR?: PersonWhereInput[] | PersonWhereInput;
+  NOT?: PersonWhereInput[] | PersonWhereInput;
+}
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
 }>;
+
+export interface UserCreateWithoutPostsInput {
+  email?: String;
+  name: String;
+}
+
+export interface PostUpdateWithWhereUniqueWithoutAuthorInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutAuthorDataInput;
+}
+
+export interface PostCreateInput {
+  title: String;
+  published?: Boolean;
+  author?: UserCreateOneWithoutPostsInput;
+}
 
 export interface PostUpdateManyWithoutAuthorInput {
   create?: PostCreateWithoutAuthorInput[] | PostCreateWithoutAuthorInput;
@@ -495,24 +723,21 @@ export interface PostUpdateManyWithoutAuthorInput {
     | PostUpsertWithWhereUniqueWithoutAuthorInput;
 }
 
-export interface UserUpdateWithoutPostsDataInput {
-  email?: String;
-  name?: String;
+export interface UserSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserWhereInput;
+  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
 }
 
-export interface UserUpdateInput {
+export interface UserUpdateDataInput {
   email?: String;
   name?: String;
   posts?: PostUpdateManyWithoutAuthorInput;
-}
-
-export interface UserUpdateOneWithoutPostsInput {
-  create?: UserCreateWithoutPostsInput;
-  update?: UserUpdateWithoutPostsDataInput;
-  upsert?: UserUpsertWithoutPostsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: UserWhereUniqueInput;
 }
 
 export interface PostWhereInput {
@@ -552,53 +777,77 @@ export interface PostWhereInput {
   NOT?: PostWhereInput[] | PostWhereInput;
 }
 
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface MessageWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  text?: String;
+  text_not?: String;
+  text_in?: String[] | String;
+  text_not_in?: String[] | String;
+  text_lt?: String;
+  text_lte?: String;
+  text_gt?: String;
+  text_gte?: String;
+  text_contains?: String;
+  text_not_contains?: String;
+  text_starts_with?: String;
+  text_not_starts_with?: String;
+  text_ends_with?: String;
+  text_not_ends_with?: String;
+  sentBy?: UserWhereInput;
+  AND?: MessageWhereInput[] | MessageWhereInput;
+  OR?: MessageWhereInput[] | MessageWhereInput;
+  NOT?: MessageWhereInput[] | MessageWhereInput;
+}
+
+export interface UserUpdateWithoutPostsDataInput {
+  email?: String;
+  name?: String;
+}
+
 export interface PostUpdateInput {
   title?: String;
   published?: Boolean;
   author?: UserUpdateOneWithoutPostsInput;
 }
 
-export interface PositionSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: PositionWhereInput;
-  AND?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
-  OR?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
-  NOT?: PositionSubscriptionWhereInput[] | PositionSubscriptionWhereInput;
+export interface MessageUpdateInput {
+  text?: String;
+  sentBy?: UserUpdateOneRequiredInput;
 }
 
-export interface UserCreateWithoutPostsInput {
+export type PositionWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface UserCreateInput {
   email?: String;
   name: String;
+  posts?: PostCreateManyWithoutAuthorInput;
 }
 
-export interface PostUpsertWithWhereUniqueWithoutAuthorInput {
-  where: PostWhereUniqueInput;
-  update: PostUpdateWithoutAuthorDataInput;
-  create: PostCreateWithoutAuthorInput;
-}
-
-export interface PositionUpdateInput {
-  x?: String;
-  y?: String;
-  z?: String;
-}
-
-export interface PostCreateInput {
-  title: String;
-  published?: Boolean;
-  author?: UserCreateOneWithoutPostsInput;
-}
-
-export interface ClickUpdateInput {
-  target?: String;
-}
-
-export interface UserCreateOneWithoutPostsInput {
-  create?: UserCreateWithoutPostsInput;
-  connect?: UserWhereUniqueInput;
+export interface PostCreateManyWithoutAuthorInput {
+  create?: PostCreateWithoutAuthorInput[] | PostCreateWithoutAuthorInput;
+  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
 }
 
 export interface PostCreateWithoutAuthorInput {
@@ -606,36 +855,51 @@ export interface PostCreateWithoutAuthorInput {
   published?: Boolean;
 }
 
-export interface PostUpdateWithWhereUniqueWithoutAuthorInput {
-  where: PostWhereUniqueInput;
-  data: PostUpdateWithoutAuthorDataInput;
+export interface ClickUpdateInput {
+  target?: String;
 }
 
-export interface ClickSubscriptionWhereInput {
+export interface PostSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
   updatedFields_contains_every?: String[] | String;
   updatedFields_contains_some?: String[] | String;
-  node?: ClickWhereInput;
-  AND?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
-  OR?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
-  NOT?: ClickSubscriptionWhereInput[] | ClickSubscriptionWhereInput;
+  node?: PostWhereInput;
+  AND?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
+  OR?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
+  NOT?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
 }
 
-export interface UserSubscriptionWhereInput {
+export interface UserCreateOneWithoutPostsInput {
+  create?: UserCreateWithoutPostsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateOneWithoutPostsInput {
+  create?: UserCreateWithoutPostsInput;
+  update?: UserUpdateWithoutPostsDataInput;
+  upsert?: UserUpsertWithoutPostsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateInput {
+  email?: String;
+  name?: String;
+  posts?: PostUpdateManyWithoutAuthorInput;
+}
+
+export interface PersonSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
   updatedFields_contains_every?: String[] | String;
   updatedFields_contains_some?: String[] | String;
-  node?: UserWhereInput;
-  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  node?: PersonWhereInput;
+  AND?: PersonSubscriptionWhereInput[] | PersonSubscriptionWhereInput;
+  OR?: PersonSubscriptionWhereInput[] | PersonSubscriptionWhereInput;
+  NOT?: PersonSubscriptionWhereInput[] | PersonSubscriptionWhereInput;
 }
-
-export type PostWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
 
 export interface NodeNode {
   id: ID_Output;
@@ -663,6 +927,70 @@ export interface UserPreviousValuesSubscription
   name: () => Promise<AsyncIterator<String>>;
 }
 
+export interface MessageEdgeNode {
+  cursor: String;
+}
+
+export interface MessageEdge extends Promise<MessageEdgeNode>, Fragmentable {
+  node: <T = Message>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface MessageEdgeSubscription
+  extends Promise<AsyncIterator<MessageEdgeNode>>,
+    Fragmentable {
+  node: <T = MessageSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ClickEdgeNode {
+  cursor: String;
+}
+
+export interface ClickEdge extends Promise<ClickEdgeNode>, Fragmentable {
+  node: <T = Click>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ClickEdgeSubscription
+  extends Promise<AsyncIterator<ClickEdgeNode>>,
+    Fragmentable {
+  node: <T = ClickSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface MessageConnectionNode {}
+
+export interface MessageConnection
+  extends Promise<MessageConnectionNode>,
+    Fragmentable {
+  pageInfo: <T = PageInfo>() => T;
+  edges: <T = FragmentableArray<MessageEdgeNode>>() => T;
+  aggregate: <T = AggregateMessage>() => T;
+}
+
+export interface MessageConnectionSubscription
+  extends Promise<AsyncIterator<MessageConnectionNode>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<MessageEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateMessageSubscription>() => T;
+}
+
+export interface BatchPayloadNode {
+  count: Long;
+}
+
+export interface BatchPayload extends Promise<BatchPayloadNode>, Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayloadNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
 export interface ClickConnectionNode {}
 
 export interface ClickConnection
@@ -681,83 +1009,6 @@ export interface ClickConnectionSubscription
   aggregate: <T = AggregateClickSubscription>() => T;
 }
 
-export interface PositionConnectionNode {}
-
-export interface PositionConnection
-  extends Promise<PositionConnectionNode>,
-    Fragmentable {
-  pageInfo: <T = PageInfo>() => T;
-  edges: <T = FragmentableArray<PositionEdgeNode>>() => T;
-  aggregate: <T = AggregatePosition>() => T;
-}
-
-export interface PositionConnectionSubscription
-  extends Promise<AsyncIterator<PositionConnectionNode>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PositionEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePositionSubscription>() => T;
-}
-
-export interface PageInfoNode {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfo extends Promise<PageInfoNode>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfoNode>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BatchPayloadNode {
-  count: Long;
-}
-
-export interface BatchPayload extends Promise<BatchPayloadNode>, Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayloadNode>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface PostPreviousValuesNode {
-  id: ID_Output;
-  title: String;
-  published: Boolean;
-}
-
-export interface PostPreviousValues
-  extends Promise<PostPreviousValuesNode>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  published: () => Promise<Boolean>;
-}
-
-export interface PostPreviousValuesSubscription
-  extends Promise<AsyncIterator<PostPreviousValuesNode>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-}
-
 export interface AggregateUserNode {
   count: Int;
 }
@@ -770,63 +1021,6 @@ export interface AggregateUser
 
 export interface AggregateUserSubscription
   extends Promise<AsyncIterator<AggregateUserNode>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface UserConnectionNode {}
-
-export interface UserConnection
-  extends Promise<UserConnectionNode>,
-    Fragmentable {
-  pageInfo: <T = PageInfo>() => T;
-  edges: <T = FragmentableArray<UserEdgeNode>>() => T;
-  aggregate: <T = AggregateUser>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnectionNode>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface PositionNode {
-  id: ID_Output;
-  x: String;
-  y: String;
-  z: String;
-}
-
-export interface Position extends Promise<PositionNode>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  x: () => Promise<String>;
-  y: () => Promise<String>;
-  z: () => Promise<String>;
-}
-
-export interface PositionSubscription
-  extends Promise<AsyncIterator<PositionNode>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  x: () => Promise<AsyncIterator<String>>;
-  y: () => Promise<AsyncIterator<String>>;
-  z: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregatePostNode {
-  count: Int;
-}
-
-export interface AggregatePost
-  extends Promise<AggregatePostNode>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePostNode>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -848,22 +1042,22 @@ export interface ClickSubscription
   target: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PostConnectionNode {}
+export interface UserConnectionNode {}
 
-export interface PostConnection
-  extends Promise<PostConnectionNode>,
+export interface UserConnection
+  extends Promise<UserConnectionNode>,
     Fragmentable {
   pageInfo: <T = PageInfo>() => T;
-  edges: <T = FragmentableArray<PostEdgeNode>>() => T;
-  aggregate: <T = AggregatePost>() => T;
+  edges: <T = FragmentableArray<UserEdgeNode>>() => T;
+  aggregate: <T = AggregateUser>() => T;
 }
 
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnectionNode>>,
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnectionNode>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
 }
 
 export interface ClickSubscriptionPayloadNode {
@@ -889,6 +1083,59 @@ export interface ClickSubscriptionPayloadSubscription
   previousValues: <T = ClickPreviousValuesSubscription>() => T;
 }
 
+export interface AggregatePostNode {
+  count: Int;
+}
+
+export interface AggregatePost
+  extends Promise<AggregatePostNode>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePostNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface ClickPreviousValuesNode {
+  id: ID_Output;
+  target: String;
+}
+
+export interface ClickPreviousValues
+  extends Promise<ClickPreviousValuesNode>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  target: () => Promise<String>;
+}
+
+export interface ClickPreviousValuesSubscription
+  extends Promise<AsyncIterator<ClickPreviousValuesNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  target: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostConnectionNode {}
+
+export interface PostConnection
+  extends Promise<PostConnectionNode>,
+    Fragmentable {
+  pageInfo: <T = PageInfo>() => T;
+  edges: <T = FragmentableArray<PostEdgeNode>>() => T;
+  aggregate: <T = AggregatePost>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnectionNode>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
 export interface PostNode {
   id: ID_Output;
   title: String;
@@ -911,25 +1158,6 @@ export interface PostSubscription
   author: <T = UserSubscription>() => T;
 }
 
-export interface ClickPreviousValuesNode {
-  id: ID_Output;
-  target: String;
-}
-
-export interface ClickPreviousValues
-  extends Promise<ClickPreviousValuesNode>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  target: () => Promise<String>;
-}
-
-export interface ClickPreviousValuesSubscription
-  extends Promise<AsyncIterator<ClickPreviousValuesNode>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  target: () => Promise<AsyncIterator<String>>;
-}
-
 export interface PositionEdgeNode {
   cursor: String;
 }
@@ -946,43 +1174,101 @@ export interface PositionEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateClickNode {
-  count: Int;
-}
-
-export interface AggregateClick
-  extends Promise<AggregateClickNode>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateClickSubscription
-  extends Promise<AsyncIterator<AggregateClickNode>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface UserSubscriptionPayloadNode {
+export interface MessageSubscriptionPayloadNode {
   mutation: MutationType;
   updatedFields?: String[];
 }
 
-export interface UserSubscriptionPayload
-  extends Promise<UserSubscriptionPayloadNode>,
+export interface MessageSubscriptionPayload
+  extends Promise<MessageSubscriptionPayloadNode>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = User>() => T;
+  node: <T = Message>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValues>() => T;
+  previousValues: <T = MessagePreviousValues>() => T;
 }
 
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayloadNode>>,
+export interface MessageSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<MessageSubscriptionPayloadNode>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
+  node: <T = MessageSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
+  previousValues: <T = MessagePreviousValuesSubscription>() => T;
+}
+
+export interface PositionNode {
+  id: ID_Output;
+  x: String;
+  y: String;
+  z: String;
+}
+
+export interface Position extends Promise<PositionNode>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  x: () => Promise<String>;
+  y: () => Promise<String>;
+  z: () => Promise<String>;
+}
+
+export interface PositionSubscription
+  extends Promise<AsyncIterator<PositionNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  x: () => Promise<AsyncIterator<String>>;
+  y: () => Promise<AsyncIterator<String>>;
+  z: () => Promise<AsyncIterator<String>>;
+}
+
+export interface MessagePreviousValuesNode {
+  id: ID_Output;
+  text: String;
+}
+
+export interface MessagePreviousValues
+  extends Promise<MessagePreviousValuesNode>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+}
+
+export interface MessagePreviousValuesSubscription
+  extends Promise<AsyncIterator<MessagePreviousValuesNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PersonEdgeNode {
+  cursor: String;
+}
+
+export interface PersonEdge extends Promise<PersonEdgeNode>, Fragmentable {
+  node: <T = Person>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PersonEdgeSubscription
+  extends Promise<AsyncIterator<PersonEdgeNode>>,
+    Fragmentable {
+  node: <T = PersonSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregatePersonNode {
+  count: Int;
+}
+
+export interface AggregatePerson
+  extends Promise<AggregatePersonNode>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePersonSubscription
+  extends Promise<AsyncIterator<AggregatePersonNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface PostSubscriptionPayloadNode {
@@ -1008,20 +1294,202 @@ export interface PostSubscriptionPayloadSubscription
   previousValues: <T = PostPreviousValuesSubscription>() => T;
 }
 
-export interface ClickEdgeNode {
+export interface PersonConnectionNode {}
+
+export interface PersonConnection
+  extends Promise<PersonConnectionNode>,
+    Fragmentable {
+  pageInfo: <T = PageInfo>() => T;
+  edges: <T = FragmentableArray<PersonEdgeNode>>() => T;
+  aggregate: <T = AggregatePerson>() => T;
+}
+
+export interface PersonConnectionSubscription
+  extends Promise<AsyncIterator<PersonConnectionNode>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PersonEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePersonSubscription>() => T;
+}
+
+export interface PageInfoNode {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfo extends Promise<PageInfoNode>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfoNode>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PersonNode {
+  id: ID_Output;
+  name: String;
+  email: String;
+}
+
+export interface Person extends Promise<PersonNode>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+}
+
+export interface PersonSubscription
+  extends Promise<AsyncIterator<PersonNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+}
+
+export interface UserSubscriptionPayloadNode {
+  mutation: MutationType;
+  updatedFields?: String[];
+}
+
+export interface UserSubscriptionPayload
+  extends Promise<UserSubscriptionPayloadNode>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = User>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValues>() => T;
+}
+
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayloadNode>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
+export interface PersonSubscriptionPayloadNode {
+  mutation: MutationType;
+  updatedFields?: String[];
+}
+
+export interface PersonSubscriptionPayload
+  extends Promise<PersonSubscriptionPayloadNode>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = Person>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = PersonPreviousValues>() => T;
+}
+
+export interface PersonSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<PersonSubscriptionPayloadNode>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = PersonSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = PersonPreviousValuesSubscription>() => T;
+}
+
+export interface UserEdgeNode {
   cursor: String;
 }
 
-export interface ClickEdge extends Promise<ClickEdgeNode>, Fragmentable {
-  node: <T = Click>() => T;
+export interface UserEdge extends Promise<UserEdgeNode>, Fragmentable {
+  node: <T = User>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ClickEdgeSubscription
-  extends Promise<AsyncIterator<ClickEdgeNode>>,
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdgeNode>>,
     Fragmentable {
-  node: <T = ClickSubscription>() => T;
+  node: <T = UserSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PersonPreviousValuesNode {
+  id: ID_Output;
+  name: String;
+  email: String;
+}
+
+export interface PersonPreviousValues
+  extends Promise<PersonPreviousValuesNode>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+}
+
+export interface PersonPreviousValuesSubscription
+  extends Promise<AsyncIterator<PersonPreviousValuesNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostEdgeNode {
+  cursor: String;
+}
+
+export interface PostEdge extends Promise<PostEdgeNode>, Fragmentable {
+  node: <T = Post>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PostEdgeSubscription
+  extends Promise<AsyncIterator<PostEdgeNode>>,
+    Fragmentable {
+  node: <T = PostSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PositionConnectionNode {}
+
+export interface PositionConnection
+  extends Promise<PositionConnectionNode>,
+    Fragmentable {
+  pageInfo: <T = PageInfo>() => T;
+  edges: <T = FragmentableArray<PositionEdgeNode>>() => T;
+  aggregate: <T = AggregatePosition>() => T;
+}
+
+export interface PositionConnectionSubscription
+  extends Promise<AsyncIterator<PositionConnectionNode>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PositionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePositionSubscription>() => T;
+}
+
+export interface MessageNode {
+  id: ID_Output;
+  text: String;
+}
+
+export interface Message extends Promise<MessageNode>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+  sentBy: <T = User>() => T;
+}
+
+export interface MessageSubscription
+  extends Promise<AsyncIterator<MessageNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+  sentBy: <T = UserSubscription>() => T;
 }
 
 export interface PositionPreviousValuesNode {
@@ -1072,54 +1540,6 @@ export interface PositionSubscriptionPayloadSubscription
   previousValues: <T = PositionPreviousValuesSubscription>() => T;
 }
 
-export interface PostEdgeNode {
-  cursor: String;
-}
-
-export interface PostEdge extends Promise<PostEdgeNode>, Fragmentable {
-  node: <T = Post>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface PostEdgeSubscription
-  extends Promise<AsyncIterator<PostEdgeNode>>,
-    Fragmentable {
-  node: <T = PostSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserEdgeNode {
-  cursor: String;
-}
-
-export interface UserEdge extends Promise<UserEdgeNode>, Fragmentable {
-  node: <T = User>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdgeNode>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregatePositionNode {
-  count: Int;
-}
-
-export interface AggregatePosition
-  extends Promise<AggregatePositionNode>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregatePositionSubscription
-  extends Promise<AsyncIterator<AggregatePositionNode>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
 export interface UserNode {
   id: ID_Output;
   email?: String;
@@ -1162,6 +1582,81 @@ export interface UserSubscription
   ) => T;
 }
 
+export interface AggregateMessageNode {
+  count: Int;
+}
+
+export interface AggregateMessage
+  extends Promise<AggregateMessageNode>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateMessageSubscription
+  extends Promise<AsyncIterator<AggregateMessageNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregatePositionNode {
+  count: Int;
+}
+
+export interface AggregatePosition
+  extends Promise<AggregatePositionNode>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePositionSubscription
+  extends Promise<AsyncIterator<AggregatePositionNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface PostPreviousValuesNode {
+  id: ID_Output;
+  title: String;
+  published: Boolean;
+}
+
+export interface PostPreviousValues
+  extends Promise<PostPreviousValuesNode>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  published: () => Promise<Boolean>;
+}
+
+export interface PostPreviousValuesSubscription
+  extends Promise<AsyncIterator<PostPreviousValuesNode>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  published: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface AggregateClickNode {
+  count: Int;
+}
+
+export interface AggregateClick
+  extends Promise<AggregateClickNode>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateClickSubscription
+  extends Promise<AsyncIterator<AggregateClickNode>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
@@ -1179,11 +1674,6 @@ export type ID_Output = string;
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
-
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
 
 /**
  * Type Defs

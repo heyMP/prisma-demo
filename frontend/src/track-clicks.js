@@ -1,6 +1,5 @@
 import client from './client'
 import gql from 'graphql-tag'
-import { create } from 'domain';
 
 const GET_LATEST_CLICK = gql`
   query {
@@ -19,7 +18,6 @@ const CREATE_CLICK = gql`
 `
 
 export default () => {
-
   // get the latest click
   client.watchQuery({ query: GET_LATEST_CLICK })
     .subscribe((res) => {
