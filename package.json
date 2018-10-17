@@ -23,13 +23,14 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.10.0",
     "prisma-client-lib": "^1.18.0",
+    "randomstring": "^1.1.5",
     "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
     "parcel-bundler": "^1.10.2",
-    "prisma": "^1.18.0",
+    "prisma": "^1.18.1",
     "sass": "^1.14.1"
   }
 }

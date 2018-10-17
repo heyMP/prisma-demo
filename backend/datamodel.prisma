@@ -27,5 +27,4 @@ type Click {
 type Message {
   id: ID! @unique
   text: String!
-  sentBy: User!
 }

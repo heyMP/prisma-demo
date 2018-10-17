@@ -10,33 +10,46 @@
 </head>
 
 <body>
-  <h1>GraphQL Playground</h1>
-  <p>
-    A series of examples demonostrating the use of Apollo in vanilla js and a Prisma based GraphQL server.
-  </p>
+  <section>
+    <h1>GraphQL Playground</h1>
+    <p>
+      A series of examples demonostrating the use of Apollo in vanilla js and a Prisma based GraphQL server.
+    </p>
+  </section>
 
-  <h2>Track clicks</h2>
-  <p>
+  <section id="clicktrack">
+    <h2>Track clicks</h2>
+    <p>
+        This uses Apollo watchQuery(), mutate(), mutate({update}) and mutate({optimisticResponse}) to display and record new mouse positions. 
+    </p>
+    <track-clicks>
+      [Click around the screen]
+    </track-clicks>
+  </section>
+
+  <section id="mousetrack">
+    <h2>Track your mouse</h2>
+    <p>
       This uses Apollo watchQuery(), mutate(), mutate({update}) and mutate({optimisticResponse}) to display and record new mouse positions. 
-  </p>
-  <track-clicks>
-    [Click around the screen]
-  </track-clicks>
+    </p>
 
-  <h2>Track your mouse</h2>
-  <p>
-    This uses Apollo watchQuery(), mutate(), mutate({update}) and mutate({optimisticResponse}) to display and record new mouse positions. 
-  </p>
-
-  <track-position>
-    [Move your mouse around]
-  </track-position>
+    <track-position>
+      [Move your mouse around]
+    </track-position>
+  </section>
 
 
 
-  <chat-messages>
-    [Chat messages here]
-  </chat-messages>
+  <section id="chatbot">
+    <h2>ChatBot</h2>
+    <p>Chatbot uses a combo of watchQuery(), mutate(), and subscribe() to do real-time messages.</p>
+    <p>Open this page in a new tab and click 'Generate new message' to see real-time in action.</p>
+    <chat-messages>
+      Real-time messages from GraphQL subscriptions
+      [Chat messages here]
+    </chat-messages>
+    <button id="chatMessageGenerate">Generate new message</button>
+  </section>
 
   <script src="index.js" defer></script>
 </body>

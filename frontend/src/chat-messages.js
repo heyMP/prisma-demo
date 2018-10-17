@@ -1,17 +1,23 @@
 import client from './client'
 import gql from 'graphql-tag'
+import randomstring from 'randomstring'
 
 const GET_MESSAGES = gql`
   query {
     messages(last: 10) {
       text
-      sentBy {
-        id
-        name
-      }
     }
   }
 `
+
+const CREATE_RANDOM_MESSAGE = gql`
+  mutation ($data: MessageCreateInput!) {
+    createMessage(data: $data) {
+      id
+    }
+  }
+`
+
 
 const MESSAGES_SUBSCRIPTION = gql`
   subscription {
@@ -21,10 +27,6 @@ const MESSAGES_SUBSCRIPTION = gql`
         node {
           id
           text
-          sentBy {
-            id
-            name
-          }
         }
       }
     }
@@ -41,13 +43,12 @@ export default () => {
     m.slice((m.length - 10), m.length).forEach(message => {
       const div = document.createElement('div')
       div.innerHTML = `
-        <span data-user="${message.sentBy.name}" data-id="${message.id}">
-          <span class="user">${message.sentBy.name}:</span> <span class="text">${message.text}</span>
-        </span>
+        <span class="text">${message.text}</span>
       `
       el.appendChild(div)
     })
   })
+
   // subscribe to latest messages
   client.subscribe({
     query: MESSAGES_SUBSCRIPTION
@@ -55,5 +56,17 @@ export default () => {
     const data = client.readQuery({ query: GET_MESSAGES })
     data.messages = [...data.messages, node]
     client.writeQuery({ query: GET_MESSAGES, data })
+  })
+
+  document.querySelector('#chatMessageGenerate').addEventListener('click', e => {
+    // create random message
+    client.mutate({
+      mutation: CREATE_RANDOM_MESSAGE,
+      variables: {
+        data: {
+          text: randomstring.generate({readable: true})
+        }
+      }
+    })
   })
 }
