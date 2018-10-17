@@ -6,6 +6,7 @@ USER=$(shell whoami)
 start-prod:
 	docker-compose build
 	make build-frontend
+	docker-compose build
 	docker-compose up -d
 	make prisma-update
 
