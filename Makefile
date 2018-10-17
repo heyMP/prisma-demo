@@ -12,7 +12,7 @@ start-prod:
 start-dev:
 	docker-compose build
 	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d
-	make prisma-update-force
+	make prisma-update
 
 build-frontend:
 	docker-compose run --rm node npm run parcel:build
